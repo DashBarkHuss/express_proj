@@ -1,64 +1,20 @@
-const Joi = require('joi');
 const express = require('express');
+const database = require('./database');
+const fetch = require('node-fetch');
 const app = express();
 
-app.use(express.json());
-
-const courses = [
-    {id: 1, name: "Bio" },
-    {id: 2, name: "Humash"},
-    {id:3, name: "Digital Imaging" }
-]
+database.create();
 
 app.get('/', (req, res)=>{
-    res.send('Hello World');
-});
-app.get('/api/courses', (req,res)=>{
-    res.send(courses);
-})
-app.get('/api/courses/:id', (req, res) => {
-    const course = courses.find(c => c.id === parseInt(req.params.id));
-    if(!course) res.status(404).send('The course was not found')
-    res.send(course);
-});
+    database.connection.query('select * from user', (err, results)=>{
+        console.log(err, res);
+        res.send(results.map(x=>x.username))
+    })
 
-app.post('/api/courses', (req, res)=>{
-    validateCourse(req.body);
-    const course = {
-        id: courses.length + 1,
-        name:req.body.name,
-    }
-    courses.push(course);
-    res.send(course);
 })
 
-app.put('/api/courses/:id', (req,res)=>{
-    const course = courses.find(c => c.id === parseInt(req.params.id));
-    console.log(course);
-    if(!course) return res.status(404).send('The course was not found')
-    const {error} = validateCourse(req.body, res);
-    if (error) return res.status(404).send(error.details[0].message);
 
-    course.name = req.body.name;
-    res.send(course);
-})
+app.listen(3306, ()=>{console.log("listening")})
 
-app.delete('/api/courses/:id', (req, res)=>{
-    const course = courses.find(c => c.id === parseInt(req.params.id));
-    if(!course) return res.status(404).send('The course was not found')
+fetch('http://127.0.0.1:3306/').then(x=>{console.log('done')})
 
-    const index = courses.indexOf(course);
-    courses.splice(index,1);
-    res.send(courses);
- 
-})
-
-function validateCourse(body, res){
-    const schema = {
-        name: Joi.string().min(3).required()
-    }
-    return Joi.validate(body, schema);
-} 
-// PORT
-const port = process.env.PORT || 3306;
-app.listen(port, ()=>{console.log(`Listening on port ${port}!`)})
