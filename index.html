@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="addRc(1)">acc RC</button>
+    <script>
+    const addRc = (user_id)=>{
+        const rcInfo = ()=>{
+            let info = {timestamp: Date.now(), user_id};
+            if ("geolocation" in navigator){
+                const success = (x)=>info.geolocation = x;
+                navigator.geolocation.getCurrentPosition(success);
+            }
+            return info;
+        }
+        
+        fetch('http://127.0.0.1:3306/rc', 
+        {method: 'POST', 
+        body: JSON.stringify({rcInfo:rcInfo(user_id)}),
+        headers: {
+            "Content-Type": "application/json"
+        }
+        }
+        ).then(x=>{console.log('done')})
+
+    }
+    </script>
+</body>
+</html>
