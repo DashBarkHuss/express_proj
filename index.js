@@ -20,7 +20,7 @@ app.get('/', (req, res)=>{
 
 app.post('/rc', (req, res)=>{
     console.log(req.body);
-    const q = `insert into reality_checks (time, location, user_id) values('${req.body.rcInfo.timestamp}','${req.body.rcInfo.geolocation}', '${req.body.user_id}')`;
+    const q = `insert into reality_checks (time, longitude, latitude, accuracy, user_id) values(${req.body.timestamp},${req.body.coords.longitude}, ${req.body.coords.latitude}, ${req.body.coords.accuracy}, '${req.body.user_id}')`;
 
     database.connection.query(q, (err, results)=>{
         console.log(err, results);
