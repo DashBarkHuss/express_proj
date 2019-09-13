@@ -11,41 +11,52 @@
     <script>
     const getGeolocation = ()=>{
         return new Promise ((resolve, reject)=>{
-
-            if ("geolocation" in navigator){
+            if (navigator.onLine && "geolocation" in navigator){
                 const success = geolocation=>{
                     resolve(geolocation)
                 }
                 const error = (geolocation)=>{
                     resolve(null)
                 };
-                navigator.geolocation.getCurrentPosition(success);
+                navigator.geolocation.getCurrentPosition(success, error);
             } else (resolve(null))
         })
     }
+
+    const getCoords = (geolocation)=>{
+        if (geolocation){
+            [longitude, latitude, accuracy] = [geolocation.coords.longitude, geolocation.coords.latitude, geolocation.coords.accuracy]
+        } else {
+            [longitude, latitude, accuracy] = [null, null, null]
+        }
+        return {latitude, longitude, accuracy};
+    }
+
     const addRc = (user_id)=>{
         let info = {timestamp: Date.now(), user_id};
 
         return getGeolocation().then(geolocation=>{
-            if (geolocation){
-                [longitude, latitude, accuracy] = [geolocation.coords.longitude, geolocation.coords.latitude, geolocation.coords.accuracy]
+            
+            info.coords = getCoords(geolocation);
+            
+            if (navigator.onLine){
+                return fetch('http://127.0.0.1:3306/rc', 
+                {
+                    method: 'POST', 
+                    body: JSON.stringify(info),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
             } else {
-                [longitude, latitude, accuracy] = [null, null, null]
+                throw info; 
             }
-            info.coords = {latitude, longitude, accuracy};
-            return info
-        }).then(info => {
-            console.log(JSON.stringify(info));
-            return fetch('http://127.0.0.1:3306/rc', 
-            {
-                method: 'POST', 
-                body: JSON.stringify(info),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-            )
-        }).then(x=>console.log("done"))
+
+        }).then(response=>{
+            if (response.status==404 || response.body.success == false){throw response }
+            else{return response}
+        }).then(response=>console.log("done", response)
+        ).catch(info=>console.log("store rc locally ", info))
     }
     </script>
 </body>
