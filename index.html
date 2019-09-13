@@ -29,8 +29,10 @@
         return getGeolocation().then(geolocation=>{
             if (geolocation){
                 [longitude, latitude, accuracy] = [geolocation.coords.longitude, geolocation.coords.latitude, geolocation.coords.accuracy]
-                info.coords = {latitude, longitude, accuracy};
+            } else {
+                [longitude, latitude, accuracy] = [null, null, null]
             }
+            info.coords = {latitude, longitude, accuracy};
             return info
         }).then(info => {
             console.log(JSON.stringify(info));
