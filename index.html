@@ -32,15 +32,8 @@
         return {latitude, longitude, accuracy};
     }
 
-    const addRc = (user_id)=>{
-        let info = {timestamp: Date.now(), user_id};
-
-        return getGeolocation().then(geolocation=>{
-            
-            info.coords = getCoords(geolocation);
-            
-            if (navigator.onLine){
-                return fetch('http://127.0.0.1:3306/rc', 
+    const postRC= (info)=>{
+        return fetch('http://127.0.0.1:3306/rc', 
                 {
                     method: 'POST', 
                     body: JSON.stringify(info),
@@ -48,15 +41,37 @@
                         "Content-Type": "application/json"
                     }
                 })
+    }
+    const storeLocally= (info)=>{
+        if(!localStorage.hasOwnProperty('rcLocal')){
+            localStorage.setItem('rcLocal', "[]");        
+        }
+        const rcLocal = JSON.parse(localStorage.rcLocal);
+        if (rcLocal.indexOf(info) == -1){
+            rcLocal.push(info);
+            localStorage.setItem('rcLocal', JSON.stringify(rcLocal));
+        }
+        return rcLocal;
+    }
+
+    const addRc = (user_id)=>{
+        let info = {timestamp: Date.now(), user_id};
+
+        return getGeolocation().then(geolocation=>{
+            info.coords = getCoords(geolocation);
+            if (navigator.onLine){
+                return postRC(info)
             } else {
                 throw info; 
             }
-
         }).then(response=>{
-            if (response.status==404 || response.body.success == false){throw response }
+            if (response.status==404 || response.body.success == false)throw response;
             else{return response}
         }).then(response=>console.log("done", response)
-        ).catch(info=>console.log("store rc locally ", info))
+        ).catch(info=>{
+            console.log("store rc locally ", info)
+            console.log(storeLocally(info));
+        })
     }
     </script>
 </body>
