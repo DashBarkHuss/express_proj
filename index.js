@@ -9,6 +9,7 @@ app.use(express.json());
 
 
 app.use(express.static("./"))
+
 app.get('/', (req, res)=>{
     database.connection.query('select * from user', (err, results)=>{
         console.log(err, res);
@@ -17,14 +18,22 @@ app.get('/', (req, res)=>{
 
 })
 
+app.get('/hi/:name', (req, res) => {
+    const hi = `Hi ${req.params.name}`;
+    res.send('hi');
+});
+app.get('/hi', (req, res) => {
+    res.send('hi');
+});
 
 app.post('/rc', (req, res)=>{
-    console.log(req.body);
+    console.log(30);
+    console.log(new Date(req.body.timestamp));
     const q = `insert into reality_checks (time, longitude, latitude, accuracy, user_id) values(${req.body.timestamp},${req.body.coords.longitude}, ${req.body.coords.latitude}, ${req.body.coords.accuracy}, '${req.body.user_id}')`;
 
     database.connection.query(q, (err, results)=>{
         console.log(err, results);
-        res.send(results)
+        res.send({rows: results.affectedRows, time: (new Date(req.body.timestamp))})
     })
 
 })
