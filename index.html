@@ -6,80 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="sw.js"></script>
+    <script src = "addRc.js"></script>
 </head>
 <body>
     <button onclick="addRc(1)">acc RC</button>
-    <script>   
-    const getGeolocation = ()=>{
-        return new Promise ((resolve, reject)=>{
-            if ("geolocation" in navigator){
-                const success = geolocation=>{
-                    resolve(geolocation)
-                }
-                const error = (geolocation)=>{
-                    resolve(null)
-                };
-                navigator.geolocation.getCurrentPosition(success, error);
-            } else (resolve(null))
-        })
-    }
-
-    const getCoords = (geolocation)=>{
-        if (geolocation){
-            [longitude, latitude, accuracy] = [geolocation.coords.longitude, geolocation.coords.latitude, geolocation.coords.accuracy]
-        } else {
-            [longitude, latitude, accuracy] = [null, null, null]
-        }
-        return {latitude, longitude, accuracy};
-    }
-
-    const postRC= (info)=>{
-        return fetch('http://127.0.0.1:3306/rc', 
-                {
-                    method: 'POST', 
-                    body: JSON.stringify(info),
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                })
-    }
-    const storeLocally= (info)=>{
-        if(!localStorage.hasOwnProperty('rcLocal')){
-            localStorage.setItem('rcLocal', "[]");        
-        }
-        const rcLocal = JSON.parse(localStorage.rcLocal);
-        if (rcLocal.indexOf(info) == -1){
-            rcLocal.push(info);
-            localStorage.setItem('rcLocal', JSON.stringify(rcLocal));
-        }
-        return rcLocal;
-    }
-
-    const addRc = (user_id)=>{
-        let info = {timestamp: Date.now(), user_id};
-        console.log("Time of RC: ",Date(info.timestamp).substring(16, 24));
-        getGeolocation()
-        .then(location=>{
-            return getCoords(location);
-        })
-        .then(coords=>{
-            info.coords = coords
-            return info
-        })
-        .then(info=>{
-            if ('SyncManager' in window) {
-            navigator.serviceWorker.getRegistration()
-                .then(registration => {
-                    registration.sync.register(`rc-${JSON.stringify(info)}`);
-                }); 
-            } else {
-                console.log("no sync manager")
-                fetch('/rc', info)
-            }
-        })
-
-
-    }
-    </script>
 </body>
 </html>

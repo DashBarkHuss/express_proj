@@ -27,3 +27,28 @@ if('serviceWorker' in navigator) {
           )
   }
 })
+
+var CACHE_NAME = 'static-cache';
+var urlsToCache = [
+  '.', 'index.html', 'addRc.js'
+]
+
+self.addEventListener('install', 
+function(e){
+  e.waitUntil(caches.open(CACHE_NAME)
+    .then(function(cache){
+      return cache.addAll(urlsToCache)
+    })
+  );
+});
+
+self.addEventListener('fetch', 
+  function(e){
+    e.respondWith(
+      caches.match(e.request)
+      .then(response=>{
+        return response||fetch(e.request)
+      })
+    )
+  }
+)
