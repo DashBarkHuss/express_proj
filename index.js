@@ -28,12 +28,12 @@ app.get('/hi', (req, res) => {
 
 app.post('/rc', (req, res)=>{
     console.log(30);
-    console.log(new Date(req.body.timestamp));
     const q = `insert into reality_checks (time, longitude, latitude, accuracy, user_id) values(${req.body.timestamp},${req.body.coords.longitude}, ${req.body.coords.latitude}, ${req.body.coords.accuracy}, '${req.body.user_id}')`;
+    const date = (new Date(req.body.timestamp)).toString();
 
     database.connection.query(q, (err, results)=>{
         console.log(err, results);
-        res.send({rows: results.affectedRows, time: (new Date(req.body.timestamp))})
+        res.send({rows: results.affectedRows, time: date})
     })
 
 })
