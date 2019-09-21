@@ -11,4 +11,17 @@
 <body>
     <button onclick="addRc(1)">acc RC</button>
 </body>
+<script>
+window.onload = ()=>{
+    localStorage.clear()
+    if(!localStorage.rc){
+        console.log("loading data")
+        fetch('/rc/1').then(x=>console.log(x.text()));
+        localStorage.rc = JSON.stringify([{time:123, coords:[5,7]}, {time:193, coords:[5,7]}])
+        //
+    } else{
+        //fetch only new stuff?
+    }
+};
+</script>
 </html>

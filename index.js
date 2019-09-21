@@ -18,12 +18,14 @@ app.get('/', (req, res)=>{
 
 })
 
-app.get('/hi/:name', (req, res) => {
-    const hi = `Hi ${req.params.name}`;
-    res.send('hi');
-});
-app.get('/hi', (req, res) => {
-    res.send('hi');
+
+app.get('/rc/:id', (req, res) => {
+    const startOfDay =  new Date().setHours(0,0,0,0);
+    const q = `select * from reality_checks where user_id = ${req.params.id} AND time > ${startOfDay}`;
+    database.connection.query(q, (err, results)=>{
+        console.log(results);
+        res.send(err, results);
+    })
 });
 
 app.post('/rc', (req, res)=>{
