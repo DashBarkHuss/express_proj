@@ -9,18 +9,7 @@
 </head>
 <body>
     <button onclick="addRc(1)">acc RC</button>
-    <button onclick="test()">test</button>
-    <script>
-    function test(){
-        const success = geolocation=>{
-                    console.log(geolocation)
-                }
-                const error = (geolocation)=>{
-                    console.log("oops")
-                };
-                navigator.geolocation.getCurrentPosition(success, error);
-
-    }    
+    <script>   
     const getGeolocation = ()=>{
         return new Promise ((resolve, reject)=>{
             if ("geolocation" in navigator){
@@ -68,7 +57,7 @@
 
     const addRc = (user_id)=>{
         let info = {timestamp: Date.now(), user_id};
-        console.log(Date(info.timestamp));
+        console.log("Time of RC: ",Date(info.timestamp).substring(16, 24));
         getGeolocation()
         .then(location=>{
             return getCoords(location);

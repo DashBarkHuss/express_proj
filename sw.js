@@ -21,7 +21,9 @@ if('serviceWorker' in navigator) {
             },
             body: info, 
         })
-              .then(r => console.log("prom", r.text()))
+              .then(r => r.text())
+              .then(x=>JSON.parse(x))
+              .then(x=>console.log("Added to database: ", x.time.substring(16, 24), x.coords))
           )
   }
 })
