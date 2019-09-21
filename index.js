@@ -33,7 +33,7 @@ app.post('/rc', (req, res)=>{
 
     database.connection.query(q, (err, results)=>{
         console.log(err, results);
-        res.send({rows: results.affectedRows, time: date})
+        res.send({rows: results.affectedRows, time: date, coords: [req.body.coords.latitude, req.body.coords.longitude]})
     })
 
 })
