@@ -20,7 +20,7 @@ if('serviceWorker' in navigator) {
                 'Content-Type': 'application/json',
             },
             body: info, 
-        })
+          })
               .then(r => r.text())
               .then(x=>JSON.parse(x))
               .then(x=>console.log("Added to database: ", x.time.substring(16, 24), x.coords))

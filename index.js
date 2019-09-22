@@ -10,21 +10,13 @@ app.use(express.json());
 
 app.use(express.static("./"))
 
-app.get('/', (req, res)=>{
-    database.connection.query('select * from user', (err, results)=>{
-        console.log(err, res);
-        res.send(results.map(x=>x.username))
-    })
-
-})
-
 
 app.get('/rc/:id', (req, res) => {
     const startOfDay =  new Date().setHours(0,0,0,0);
     const q = `select * from reality_checks where user_id = ${req.params.id} AND time > ${startOfDay}`;
     database.connection.query(q, (err, results)=>{
-        console.log(results);
-        res.send(err, results);
+        console.log(results.map(x=>{return{id:x.id, time: (new Date(x.time)).toString()}}));
+        res.send({err,results});
     })
 });
 
@@ -42,11 +34,3 @@ app.post('/rc', (req, res)=>{
 
 app.listen(3306, ()=>{console.log("listening")})
 
-// fetch('http://127.0.0.1:3306/test',         {
-//     method: "POST",
-//     body: JSON.stringify({user_id: 1}),
-//     body: JSON.stringify({"rcInfo":{"timestamp":1568221782150,"user_id":1}}),
-//     headers: {
-//       "Content-Type": "application/json"
-//     }
-//   }).then(x=>{console.log('done')})
