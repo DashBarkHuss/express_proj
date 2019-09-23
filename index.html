@@ -7,22 +7,12 @@
     <title>Document</title>
     <script src="sw.js"></script>
     <script src = "addRc.js"></script>
+    <script src = "updateLocalRcs.js"></script>
 </head>
 <body>
     <button onclick="addRc(1)">acc RC</button>
 </body>
 <script>
-window.onload = ()=>{
-    localStorage.clear()
-    if(!localStorage.rc){
-        console.log("loading data")
-        fetch('/rc/1')
-        .then(x=>x.text())
-        .then(x=> JSON.parse(x))
-        .then(x=>{localStorage.rc = JSON.stringify(x.results); console.log(JSON.parse(localStorage.rc))})
-    } else{
-        //fetch only new stuff?
-    }
-};
+ 
 </script>
 </html>

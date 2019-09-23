@@ -12,21 +12,18 @@ app.use(express.static("./"))
 
 
 app.get('/rc/:id', (req, res) => {
-    const startOfDay =  new Date().setHours(0,0,0,0);
-    const q = `select * from reality_checks where user_id = ${req.params.id} AND time > ${startOfDay}`;
+    const startTime =  req.query.lastrc || new Date().setHours(0,0,0,0);
+    const q = `select * from reality_checks where user_id = ${req.params.id} AND time > ${startTime}`;
     database.connection.query(q, (err, results)=>{
-        console.log(results.map(x=>{return{id:x.id, time: (new Date(x.time)).toString()}}));
         res.send({err,results});
-    })
+    });
 });
 
 app.post('/rc', (req, res)=>{
-    console.log(30);
     const q = `insert into reality_checks (time, longitude, latitude, accuracy, user_id) values(${req.body.timestamp},${req.body.coords.longitude}, ${req.body.coords.latitude}, ${req.body.coords.accuracy}, '${req.body.user_id}')`;
     const date = (new Date(req.body.timestamp)).toString();
 
     database.connection.query(q, (err, results)=>{
-        console.log(err, results);
         res.send({rows: results.affectedRows, time: date, coords: [req.body.coords.latitude, req.body.coords.longitude]})
     })
 
