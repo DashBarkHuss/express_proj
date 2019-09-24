@@ -2,6 +2,9 @@ const express = require('express');
 const database = require('./database');
 const fetch = require('node-fetch');
 const app = express();
+const io = require('socket.io-client');
+
+const socket = io("http://localhost:3000");
 
 
 database.create();
@@ -24,6 +27,7 @@ app.post('/rc', (req, res)=>{
     const date = (new Date(req.body.timestamp)).toString();
 
     database.connection.query(q, (err, results)=>{
+        socket.emit("chat", "hi")
         res.send({rows: results.affectedRows, time: date, coords: [req.body.coords.latitude, req.body.coords.longitude]})
     })
 
