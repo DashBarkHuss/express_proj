@@ -6,9 +6,9 @@ const io = socketIO(server);
 io.on("connection", socket =>{
     console.log(`${io.engine.clientsCount} connections`);
 
-    socket.on("chat", message=>{
+    socket.on("databaseUpdated", message=>{
         console.log(`${socket.id}: ${message}`);
-        io.sockets.emit("chat-message", message, socket.id)
+        io.sockets.emit("databaseUpdated-message", message, socket.id)
     })
 
     socket.on("disconnect", () =>{

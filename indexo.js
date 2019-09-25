@@ -27,11 +27,16 @@ app.post('/rc', (req, res)=>{
     const date = (new Date(req.body.timestamp)).toString();
 
     database.connection.query(q, (err, results)=>{
-        socket.emit("chat", "hi")
+        socket.emit("databaseUpdated", "database updated")
         res.send({rows: results.affectedRows, time: date, coords: [req.body.coords.latitude, req.body.coords.longitude]})
     })
 
 })
+console.log("hi");
+
 
 app.listen(3306, ()=>{console.log("listening")})
 
+socket.on("databaseUpdated-message", (message,id)=>{
+    console.log(`${id}:${message}`);
+})
