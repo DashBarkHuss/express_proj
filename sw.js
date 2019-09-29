@@ -30,7 +30,7 @@ if('serviceWorker' in navigator) {
 
 var CACHE_NAME = 'static-cache';
 var urlsToCache = [
-  '.', 'index.html', 'addRc.js'
+  '.', 'index.html', 'addRc.js', 'updateLocalRcs.js', 'timeHelper.js'
 ]
 
 self.addEventListener('install', 

@@ -2,9 +2,8 @@ const express = require('express');
 const database = require('./database');
 const fetch = require('node-fetch');
 const app = express();
-const io = require('socket.io-client');
-
-const socket = io("http://localhost:3000");
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 
 database.create();
@@ -12,31 +11,36 @@ app.use(express.json());
 
 
 app.use(express.static("./"))
+app.use(express.static(__dirname))
 
 
-app.get('/rc/:id', (req, res) => {
+
+app.get('/rc/:id/today', (req, res) => {
     const startTime =  req.query.lastrc || new Date().setHours(0,0,0,0);
     const q = `select * from reality_checks where user_id = ${req.params.id} AND time > ${startTime}`;
     database.connection.query(q, (err, results)=>{
+        
         res.send({err,results});
     });
 });
 
 app.post('/rc', (req, res)=>{
+    console.log("post", req.body)
     const q = `insert into reality_checks (time, longitude, latitude, accuracy, user_id) values(${req.body.timestamp},${req.body.coords.longitude}, ${req.body.coords.latitude}, ${req.body.coords.accuracy}, '${req.body.user_id}')`;
     const date = (new Date(req.body.timestamp)).toString();
 
     database.connection.query(q, (err, results)=>{
-        socket.emit("databaseUpdated", "database updated")
+        if (results.affectedRows) io.emit("databaseUpdated", "database updated", req.body.timestamp);
         res.send({rows: results.affectedRows, time: date, coords: [req.body.coords.latitude, req.body.coords.longitude]})
     })
 
 })
-console.log("hi");
 
-
-app.listen(3306, ()=>{console.log("listening")})
-
-socket.on("databaseUpdated-message", (message,id)=>{
-    console.log(`${id}:${message}`);
+var server = http.listen(3000, () => {
+    console.log('server is listening on port', server.address().port)
 })
+// console.log("test");
+// io.on("databaseUpdated", (message,timestamp)=>{
+//     console.log(`${message}:${timestamp}`);
+// })
+
