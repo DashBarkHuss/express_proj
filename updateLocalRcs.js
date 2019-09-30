@@ -1,6 +1,6 @@
 let rcs;
-function syncLocalStorage(promise){ //promise is a fetch to get rc's for a a user
-    promise
+function syncLocalStorage(promise){ //promise is a fetch to get rc's for a user
+    return promise
     .then(x=>
         x.text()
         )
@@ -8,7 +8,8 @@ function syncLocalStorage(promise){ //promise is a fetch to get rc's for a a use
         JSON.parse(x))
     .then(x=>{
         localStorage.rc = JSON.stringify(x.results);
-        console.log(JSON.parse(localStorage.rc))
+        console.log(x.results)
+        return x.results;
         }
     )
     .catch(err=>console.log(err))
