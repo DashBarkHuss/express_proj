@@ -44,8 +44,11 @@ const addRc = (user_id)=>{
         return info
     })
     .then(info=>{
+        const newLocalStorageRC = [...localRcJSON(), {time: info.timestamp} ];
+        renderTimeLine(newLocalStorageRC.map(x=>x.time));
+        jsonToLocalStorageRC(newLocalStorageRC);
         if ('SyncManager' in window) {
-        navigator.serviceWorker.getRegistration()
+        navigator.serviceWorker.getRegistration() //if sync doesn't go through right away, still update the timeline
             .then(registration => {
                 registration.sync.register(`rc-${JSON.stringify(info)}`);
             }); 

@@ -19,7 +19,7 @@ app.get('/rc/:id/today', (req, res) => {
     const startTime =  req.query.lastrc || new Date().setHours(0,0,0,0);
     const q = `select * from reality_checks where user_id = ${req.params.id} AND time > ${startTime}`;
     database.connection.query(q, (err, results)=>{
-        
+        console.log(results);
         res.send({err,results});
     });
 });

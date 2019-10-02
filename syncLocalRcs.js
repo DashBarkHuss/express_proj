@@ -1,5 +1,5 @@
 let rcs;
-function syncLocalStorage(promise){ //promise is a fetch to get rc's for a user
+function syncLocalRcs(promise){ //promise is a fetch to get rc's for a user
     return promise
     .then(x=>
         x.text()
@@ -17,5 +17,8 @@ function syncLocalStorage(promise){ //promise is a fetch to get rc's for a user
 }
 window.onload = ()=>{
     localStorage.userId=1;
-    syncLocalStorage(fetch(`/rc/${localStorage.userId}/today`))
+    syncLocalRcs(fetch('/rc/1/today')).then(results=>{
+        console.log("results: ",results);
+            renderTimeLine(results.map(x=>x.time))
+    })
 };
