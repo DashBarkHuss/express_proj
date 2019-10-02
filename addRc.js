@@ -32,6 +32,21 @@ const postRC= (info)=>{
             })
 }
 
+const backgroundSyncRC =  (info)=>{
+    if ('SyncManager' in window) {
+    navigator.serviceWorker.getRegistration() 
+        .then(registration => {
+            registration.sync.register(`rc-${JSON.stringify(info)}`);
+        }); 
+    } else {
+        console.log("no sync manager")
+        postRC(info).then(r => r.text())
+        .then(x=>JSON.parse(x))
+        .then(x=>console.log("Added to database: ", x.time.substring(16, 24), x.coords))
+        .catch(err=>console.log("reality check not posted: ", err));
+    }
+}
+
 const addRc = (user_id)=>{
     let info = {timestamp: Date.now(), user_id};
     console.log("Time of RC: ",Date(info.timestamp).substring(16, 24));
@@ -47,17 +62,6 @@ const addRc = (user_id)=>{
         const newLocalStorageRC = [...localRcJSON(), {time: info.timestamp} ];
         renderTimeLine(newLocalStorageRC.map(x=>x.time));
         jsonToLocalStorageRC(newLocalStorageRC);
-        if ('SyncManager' in window) {
-        navigator.serviceWorker.getRegistration() //if sync doesn't go through right away, still update the timeline
-            .then(registration => {
-                registration.sync.register(`rc-${JSON.stringify(info)}`);
-            }); 
-        } else {
-            console.log("no sync manager")
-            postRC(info).then(r => r.text())
-            .then(x=>JSON.parse(x))
-            .then(x=>console.log("Added to database: ", x.time.substring(16, 24), x.coords))
-            .catch(err=>console.log("reality check not posted: ", err));
-        }
+        backgroundSyncRC(info);
     })
 }

@@ -30,7 +30,7 @@ if('serviceWorker' in navigator) {
 
 var CACHE_NAME = 'static-cache';
 var urlsToCache = [
-  '.', 'index.html', 'addRc.js', 'updateLocalRcs.js', 'timeHelper.js'
+  '.', 'index.html', 'addRc.js', 'syncLocalRcs.js', 'timeHelper.js', 'localStorageHelpers.js', 'timeline.js', 
 ]
 
 self.addEventListener('install', 
@@ -44,6 +44,7 @@ function(e){
 
 self.addEventListener('fetch', 
   function(e){
+    console.log("fetch: ", e.request.url);
     e.respondWith(
       caches.match(e.request)
       .then(response=>{

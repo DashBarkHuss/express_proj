@@ -4,7 +4,6 @@ const renderTimeLine=(times)=>{
     const timelineColor = 'lightblue';
     const textColor = 'lightblue';
     timeline.innerHTML = "";
-    console.log("tl");
     
     const line = document.createElementNS('http://www.w3.org/2000/svg','line')
     const svgWidth = 500 
@@ -57,11 +56,12 @@ const renderTimeLine=(times)=>{
     timeline.addEventListener('mouseleave', (e)=>{
         if(e.target.tagName=="circle"){
             e.target.setAttribute('stroke-width', `none`)
-                id = e.target.id.substring(1); 
-                elem = document.getElementById('t'+id);
-                elem.setAttribute('display','none'); 
-            }
+            id = e.target.id.substring(1); 
+            elem = document.getElementById('t'+id);
+            elem.setAttribute('display','none'); 
         }
+    }
     , true)
+    console.log("timeline updated");
 }
     
