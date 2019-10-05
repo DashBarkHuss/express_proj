@@ -17,9 +17,10 @@ app.use(express.static(__dirname))
 
 app.get('/rc/:id/today', (req, res) => {
     const startTime =  req.query.lastrc || new Date().setHours(0,0,0,0);
+    console.log("id", req.params.id);
     const q = `select * from reality_checks where user_id = ${req.params.id} AND time > ${startTime}`;
     database.connection.query(q, (err, results)=>{
-        console.log(results);
+        console.log("res",results);
         res.send({err,results});
     });
 });
@@ -30,6 +31,7 @@ app.post('/rc', (req, res)=>{
     const date = (new Date(req.body.timestamp)).toString();
 
     database.connection.query(q, (err, results)=>{
+        console.log(err, results);
         if (results.affectedRows) io.emit("databaseUpdated", "database updated", req.body.timestamp);
         res.send({rows: results.affectedRows, time: date, coords: [req.body.coords.latitude, req.body.coords.longitude]})
     })
@@ -39,8 +41,6 @@ app.post('/rc', (req, res)=>{
 var server = http.listen(3000, () => {
     console.log('server is listening on port', server.address().port)
 })
-// console.log("test");
-// io.on("databaseUpdated", (message,timestamp)=>{
-//     console.log(`${message}:${timestamp}`);
-// })
 
+
+ 

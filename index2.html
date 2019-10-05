@@ -17,11 +17,10 @@
 </head>
 <body>
     <svg id = "timeline" width=500 height=100></svg>
-    <button onclick="addRc(1)">add RC</button>
+    <button onclick="addRc(2)">add RC</button>
 </body>
 <script>
-    localStorage.user_id = 1;
-
+localStorage.user_id = 2;
     var socket = io(); //got to handle if we're offline
     socket.on('databaseUpdated', 
         rcs=>{

@@ -16,8 +16,8 @@ function syncLocalRcs(promise){ //promise is a fetch to get rc's for a user
 
 }
 window.onload = ()=>{
-    localStorage.userId=1;
-    syncLocalRcs(fetch('/rc/1/today')).then(results=>{
+    // localStorage.userId=1;
+    syncLocalRcs(fetch(`/rc/${localStorage.userId}/today`)).then(results=>{
             renderTimeLine(results.map(x=>x.time))
     })
 };

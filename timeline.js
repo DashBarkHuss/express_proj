@@ -22,7 +22,7 @@ const renderTimeLine=(times)=>{
     line.setAttributeNS(null, 'stroke-width', 1.5);
     document.getElementById("timeline").appendChild(line);
     for (i=0; i<times.length;i++){  
-        const percentage = (times[i]-firstRC)/timespan;
+        const percentage = (times[i]-firstRC)/timespan || 0;
         const text = document.createElementNS('http://www.w3.org/2000/svg','text');      
         text.setAttributeNS(null, 'x', (percentage * lineWidth + margin));
         text.setAttributeNS(null, 'y', 50-radius-4);
