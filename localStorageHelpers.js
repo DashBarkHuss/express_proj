@@ -1,7 +1,9 @@
-const localRcJSON= ()=>{
-    return JSON.parse(localStorage.rc);
+const localRcJSON= (userId)=>{
+    return JSON.parse(localStorage["rc"+userId]);
 }
 
-const jsonToLocalStorageRC = (json)=>{
-    localStorage.rc = JSON.stringify(json);
+const jsonToLocalStorageRC = (json, userId)=>{
+    localStorage["rc"+userId]= JSON.stringify(json);
 }
+
+const test = ()=>{console.log("test")}

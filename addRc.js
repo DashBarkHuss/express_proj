@@ -47,8 +47,8 @@ const backgroundSyncRC =  (info)=>{
     }
 }
 
-const addRc = (user_id)=>{
-    let info = {timestamp: Date.now(), user_id};
+const addRc = (userId)=>{
+    let info = {timestamp: Date.now(), userId};
     console.log("Time of RC: ",Date(info.timestamp).substring(16, 24));
     getGeolocation()
     .then(location=>{
@@ -59,9 +59,9 @@ const addRc = (user_id)=>{
         return info
     })
     .then(info=>{
-        const newLocalStorageRC = [...localRcJSON(), {time: info.timestamp} ];
-        renderTimeLine(newLocalStorageRC.map(x=>x.time));
-        jsonToLocalStorageRC(newLocalStorageRC);
+        const newLocalStorageRC = [...localRcJSON(userId), {time: info.timestamp} ];
+        renderTimeLine(newLocalStorageRC.map(x=>x.time), `timeline${userId}`);
+        jsonToLocalStorageRC(newLocalStorageRC, userId);
         backgroundSyncRC(info);
     })
 }

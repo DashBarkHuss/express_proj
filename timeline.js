@@ -1,6 +1,6 @@
-const renderTimeLine=(times)=>{
+const renderTimeLine=(times, elementID)=>{
     
-    const timeline = document.getElementById("timeline");
+    const timeline = document.getElementById(elementID);
     const timelineColor = 'lightblue';
     const textColor = 'lightblue';
     timeline.innerHTML = "";
@@ -20,13 +20,13 @@ const renderTimeLine=(times)=>{
     line.setAttributeNS(null, 'y2',   50);
     line.setAttributeNS(null, 'stroke', timelineColor);
     line.setAttributeNS(null, 'stroke-width', 1.5);
-    document.getElementById("timeline").appendChild(line);
+    timeline.appendChild(line);
     for (i=0; i<times.length;i++){  
         const percentage = (times[i]-firstRC)/timespan || 0;
         const text = document.createElementNS('http://www.w3.org/2000/svg','text');      
         text.setAttributeNS(null, 'x', (percentage * lineWidth + margin));
         text.setAttributeNS(null, 'y', 50-radius-4);
-        text.setAttributeNS(null, 'id', 't'+i);
+        text.setAttributeNS(null, 'id', 't'+i+elementID);
         text.setAttribute('fill', textColor);
         text.textContent = epochToTime(times[i]);
         
@@ -47,7 +47,7 @@ const renderTimeLine=(times)=>{
         if(e.target.tagName=="circle"){ 
             e.target.setAttribute('stroke', timelineColor)
             e.target.setAttribute('stroke-width', `${radius*.6}`)
-            id = e.target.id.substring(1); 
+            id = e.target.id.substring(1)+elementID; 
             elem = document.getElementById('t'+id); 
             elem.setAttribute('display','block'); 
         }
@@ -56,7 +56,7 @@ const renderTimeLine=(times)=>{
     timeline.addEventListener('mouseleave', (e)=>{
         if(e.target.tagName=="circle"){
             e.target.setAttribute('stroke-width', `none`)
-            id = e.target.id.substring(1); 
+            id = e.target.id.substring(1)+elementID; 
             elem = document.getElementById('t'+id);
             elem.setAttribute('display','none'); 
         }

@@ -27,12 +27,12 @@ app.get('/rc/:id/today', (req, res) => {
 
 app.post('/rc', (req, res)=>{
     console.log("post", req.body)
-    const q = `insert into reality_checks (time, longitude, latitude, accuracy, user_id) values(${req.body.timestamp},${req.body.coords.longitude}, ${req.body.coords.latitude}, ${req.body.coords.accuracy}, '${req.body.user_id}')`;
+    const q = `insert into reality_checks (time, longitude, latitude, accuracy, user_id) values(${req.body.timestamp},${req.body.coords.longitude}, ${req.body.coords.latitude}, ${req.body.coords.accuracy}, '${req.body.userId}')`;
     const date = (new Date(req.body.timestamp)).toString();
 
     database.connection.query(q, (err, results)=>{
         console.log(err, results);
-        if (results.affectedRows) io.emit("databaseUpdated", "database updated", req.body.timestamp);
+        if (results.affectedRows) io.emit("databaseUpdated", {message: "database updated", userId: req.body.userId});
         res.send({rows: results.affectedRows, time: date, coords: [req.body.coords.latitude, req.body.coords.longitude]})
     })
 
