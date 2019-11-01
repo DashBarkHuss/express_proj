@@ -60,11 +60,14 @@ const addRc = (userId)=>{
         return info
     })
     .then(info=>{
-        const newLocalStorageRC = [...localRcJSON(userId), {time: info.timestamp} ];
-        const times = newLocalStorageRC.map(x=>x.time);
+        const oldRCs = localRcJSON(userId) || [];
+        const newRC = {time: info.timestamp};
+        const newRCArray = [...oldRCs, newRC];
+        const times = newRCArray.map(rc=>rc.time);
         const timelineId = `timeline${userId}`;
+        
         renderTimeLine(times, timelineId);
-        jsonToLocalStorageRC(newLocalStorageRC, userId);
+        jsonToLocalStorageRC(newRCArray, userId);
         backgroundSyncRC(info);
     })
 }
