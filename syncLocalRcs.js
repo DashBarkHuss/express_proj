@@ -1,25 +1,21 @@
 let rcs;
-function syncLocalRcs(promise){ //promise is a fetch to get rc's for a user
-    return promise
-    .then(x=>
-        x.text()
-        )
-    .then(x=> 
-        JSON.parse(x))
-    .then(x=>{
-        localStorage['rc'+x.results[0].user_id] = JSON.stringify(x.results);
-        console.log(x.results)
-        return x.results;
-        }
-    )
-    .catch(err=>console.log(err))
-
+function saveToLocalRcs(responseJson){ //promise
+    if(!responseJson) return[];
+    localStorage['rc'+responseJson.userId] = JSON.stringify(responseJson.results);
+    console.log("localstorage updated:", localStorage);
 }
 window.onload = ()=>{
-    syncLocalRcs(fetch(`/rc/1/today`)).then(results=>{
+    fetch(`/rc/1/today`)
+    .then(response=>response.json())
+    .then(responseJson=>{
+        console.log("response: ", responseJson);
+        saveToLocalRcs(responseJson)
+        return responseJson.results;
+    })
+    .then(results=>{
             renderTimeLine(results? results.map(x=>x.time): [], `timeline1`)
     })
-    syncLocalRcs(fetch(`/rc/2/today`)).then(results=>{
-            renderTimeLine(results? results.map(x=>x.time): [], `timeline2`)
-    })
+    // fetch(`/rc/2/today`).then(response=>saveToLocalRcs(response.json())).then(results=>{
+    //     renderTimeLine(results? results.map(x=>x.time): [], `timeline2`)
+// })
 };

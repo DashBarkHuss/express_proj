@@ -12,8 +12,11 @@ const renderTimeLine=(times, elementID)=>{
     const lineWidth = svgWidth-margin*2;
     const firstRC = (()=>{
         return times.reduce((minimum, time) => time < minimum ? time : minimum, times[0]);
-    })()
-    const timespan = times[times.length-1]-firstRC;
+    })();
+    const lastRC = (()=>{
+        return times.reduce((maximum, time) => time > maximum ? time : maximum, times[0])
+    })();
+    const timespan = lastRC-firstRC;
     line.setAttributeNS(null, 'x1',   margin);
     line.setAttributeNS(null, 'x2', lineWidth+margin);
     line.setAttributeNS(null, 'y1',   50);

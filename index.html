@@ -31,13 +31,19 @@
     socket.on('databaseUpdated', 
         rcs=>{
 
-            syncLocalRcs(fetch(`/rc/${rcs.userId}/today`)).then(results=>{
-                console.log("results: ",results);
-                    renderTimeLine(results.map(x=>x.time), `timeline${rcs.userId}`)
-            })
+            fetch(`/rc/${rcs.userId}/today`)
+            .then(response=>response.json())
+            .then(responseJson=>{
+                saveToLocalRcs(responseJson)
+                return responseJson.results;
+            }).then(results=>{
+                const times = results.map(x=>x.time);
+                const timelineId = `timeline${rcs.userId}`;
+                renderTimeLine(times, timelineId);
+            }).catch(err=>console.log(err, `/rc/${rcs.userId}/today`))
         }
     )
-
+console.log(localStorage);
 
 </script>
 </html>

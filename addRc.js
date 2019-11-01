@@ -22,7 +22,7 @@ const getCoords = (geolocation)=>{
 }
 
 const postRC= (info)=>{
-    return fetch('http://127.0.0.1:3306/rc', 
+    return fetch('/rc', 
             {
                 method: 'POST', 
                 body: JSON.stringify(info),
@@ -40,7 +40,8 @@ const backgroundSyncRC =  (info)=>{
         }); 
     } else {
         console.log("no sync manager")
-        postRC(info).then(r => r.text())
+        postRC(info).then(r => {
+            return r.text()})
         .then(x=>JSON.parse(x))
         .then(x=>console.log("Added to database: ", x.time.substring(16, 24), x.coords))
         .catch(err=>console.log("reality check not posted: ", err));
@@ -60,7 +61,9 @@ const addRc = (userId)=>{
     })
     .then(info=>{
         const newLocalStorageRC = [...localRcJSON(userId), {time: info.timestamp} ];
-        renderTimeLine(newLocalStorageRC.map(x=>x.time), `timeline${userId}`);
+        const times = newLocalStorageRC.map(x=>x.time);
+        const timelineId = `timeline${userId}`;
+        renderTimeLine(times, timelineId);
         jsonToLocalStorageRC(newLocalStorageRC, userId);
         backgroundSyncRC(info);
     })
